@@ -1,32 +1,3 @@
-# Express with MongoDB Tutorial (Basic)
-
-## React Tutorial
-
-1. [React Inastallation](https://github.com/dev-nazmulislam/react-short-note/tree/installation)
-2. [React Fundamental Concepts](https://github.com/dev-nazmulislam/react-short-note/tree/react-fundamental)
-3. [React Advanced concepts](https://github.com/dev-nazmulislam/react-short-note/tree/advanced)
-
-## let start Express
-
-[Starter template Basic Setup](#basic-setup)
-
-[app.get()](#get-methood)
-
-[app.post()](#post-methood)
-
-[app.put()](#put-methood)
-
-[app.patch()](#patch-methood)
-
-[app.delete()](#delete-methood)
-
-## Basic Setup
-
-[Got to top](#let-start-express)
-
-**Embedded on `index.jx` to Connect.**
-
-```Js
 const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
@@ -57,89 +28,43 @@ async function run() {
     // Create Database to store Data
     const testCollection = client.db("testDatabaseName").collection("testData");
 
-
-  } finally {
-    // await client.close();
-  }
-}
-
-// Call the fuction you decleare abobe
-run().catch(console.dir);
-
-// Root Api to cheack activity
-app.get("/", (req, res) => {
-  res.send("Hello From NR Computers!");
-});
-
-app.listen(port, () => {
-  console.log(`NR Computers listening on port ${port}`);
-});
-
-```
-
-## Get Methood
-
-[Got to top](#let-start-express)
-
-### Get/Access all data from mongodb database
-
-`Server Site Code`
-
-```Js
-app.get("/service", async (req, res) => {
+    // Get/Access all data from mongodb database
+    // Server Site Code
+    app.get("/service", async (req, res) => {
       const result = await testCollection.find().toArray();
       res.send(users);
     });
-```
 
-`Client site code`
-
-```Js
-useEffect(() => {
+    // Client site code
+    useEffect(() => {
       fetch("http://localhost:5000/service")
         .then((res) => res.json())
         .then((data) => console.log(data));
     }, []);
-```
 
-## Get/Access Spacific data from mongodb database with id/email
+    // Get/Access Spacific data from mongodb database with id/email
+    // Server Site Code
+    app.get("/service/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await testCollection.find({ _id: ObjectId(id) }).toArray();
+      res.send(result);
+    });
+    // Client site code
+    useEffect(() => {
+      fetch(`http://localhost:5000/service/${id}`)
+        .then((res) => res.json())
+        .then((data) => console.log(data));
+    }, []);
 
-`Server Site Code`
+    // Get/Access Spacific data from mongodb database with multiple query
+    // Server Site Code
+    app.get("/service", async (req, res) => {
+      const query = req.body;
+      const result = await testCollection.find(query).toArray();
+      res.send(result);
+    });
 
-```Js
-app.get("/service/:id", async (req, res) => {
-const id = req.params.id;
-const result = await testCollection.find({ _id: ObjectId(id) }).toArray();
-res.send(result);
-});
-```
-
-`Client site code`
-
-```Js
-useEffect(() => {
-fetch(`http://localhost:5000/service/${id}`)
-.then((res) => res.json())
-.then((data) => console.log(data));
-}, []);
-
-```
-
-## Get/Access Spacific data from mongodb database with multiple query
-
-`Server Site Code`
-
-```Js
-app.get("/service", async (req, res) => {
-const query = req.body;
-const result = await testCollection.find(query).toArray();
-res.send(result);
-});
-```
-
-`Client site code`
-
-```Js
+    // Client site code
     const query = {
       email: "exampale@example.com",
       name: "set name",
@@ -153,51 +78,33 @@ res.send(result);
         .then((res) => res.json())
         .then((data) => console.log(data));
     }, []);
-```
 
-## Get/Access Limited data from mongodb database after find with query
-
-`Server Site Code`
-
-```Js
+    // Get/Access Limited data from mongodb database after find with query
+    // Server Site Code
     app.get("/service", async (req, res) => {
       const query = {};
       const findData = testCollection.find(query);
-      const result = await findData.skip(5).limit(3).toArray(); // you can also set skip & limit range dynamicly.
+      const result = await findData.skip(5).limit(3).toArray(); //you can also set skip & limit range dynamicly.
       res.send(result);
     });
-```
 
-`Client site code`
-
-```Js
- useEffect(() => {
+    // Client site code
+    useEffect(() => {
       fetch("http://localhost:5000/service")
         .then((res) => res.json())
         .then((data) => console.log(data));
     }, []);
 
-```
+    // Post API
+    // Post data without cheack on mongodb database
+    // Server Site Code
+    app.post("/service", async (req, res) => {
+      const service = req.body;
+      const result = await testCollection.insertOne(service);
+      res.send(result);
+    });
 
-## Post Methood
-
-[Got to top](#let-start-express)
-
-### Post data without cheack on mongodb database
-
-`Server Site Code`
-
-```Js
-app.post("/service", async (req, res) => {
-const service = req.body;
-const result = await testCollection.insertOne(service);
-res.send(result);
-});
-```
-
-`Client site code`
-
-```Js
+    // Client site code
     const newData = {
       // stroe new Data in Object here
       name: "",
@@ -215,13 +122,9 @@ res.send(result);
         const allData = [...previusData, newData];
         console.log(newReview);
       });
-```
 
-### Post data With cheack in mongodb database. Batter to use Put Methood for this task
-
-`Server Site Code`
-
-```Js
+    // Post data With cheack in mongodb database. Batter to use Put Methood for this task
+    // Server Site Code
     app.post("/service/:email", async (req, res) => {
       const service = req.body.service;
       const query = req.body.newQuery;
@@ -234,11 +137,8 @@ res.send(result);
         res.send(result);
       }
     });
-```
 
-`Client Site Code`
-
-```Js
+    // Client Site Code
     const service = {
       name: "",
       price: "",
@@ -259,17 +159,10 @@ res.send(result);
         const allData = [...previusData, newData];
         console.log(newReview);
       });
-```
 
-## Put Methood
-
-[Got to top](#let-start-express)
-
-### Update & insert Data on database by id/email/otherQuery
-
-`Server site Code`
-
-```Js
+    // Put Methood
+    // Update & insert Data on database by id/email/otherQuery
+    // Server site Code
     app.put("/service/:id", async (req, res) => {
       const id = req.params.id;
       const service = req.body;
@@ -283,15 +176,12 @@ res.send(result);
       );
       res.send({ result });
     });
-```
 
-`Client Site Code`
-
-```Js
-const updatedData = {
-name: "",
-role: "",
-};
+    // Client Site Code
+    const updatedData = {
+      name: "",
+      role: "",
+    };
 
     fetch(`http://localhost:5000/service/${id}`, {
       method: "PUT",
@@ -304,73 +194,69 @@ role: "",
       .then((data) => {
         alert("item Updated successfully!!!");
       });
-```
 
-## Patch Methood
+    // Patch api
+    // update Data by id/email/othersQueary
+    // Server site code
+    app.patch("/service/:id", async (req, res) => {
+      const id = req.params.id;
+      const service = req.body;
+      const result = await testCollection.updateOne(
+        { _id: id }, // sometime _id:ObjectId(id)
+        {
+          $set: service,
+        }
+      );
+      res.send(result);
+    });
 
-[Got to top](#let-start-express)
+    // Client site code
 
-### update Data by id/email/othersQueary
+    // const updatedData = {
+    //   name: "",
+    //   role: "",
+    // };
 
-`Server site code`
+    // fetch(`http://localhost:5000/service/${id}`, {
+    //   method: "patch",
+    //   headers: {
+    //     "content-type": "application/json",
+    //   },
+    //   body: JSON.stringify(updatedData),
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     alert("item Updated successfully!!!");
+    //   });
 
-```Js
-app.patch("/service/:id", async (req, res) => {
-const id = req.params.id;
-const service = req.body;
-const result = await testCollection.updateOne(
-{ _id: id }, // sometime _id:ObjectId(id)
-{
-$set: service,
-}
-);
-res.send(result);
-});
-```
+    // Delete API
+    // Delete Data form mongodb Database by id
+    // Server site code
+    app.delete("/service/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await testCollection.deleteOne({ _id: ObjectId(id) });
+      res.send(result);
+    });
 
-`Client site code`
-
-```Js
-const updatedData = {
-      name: "",
-      role: "",
-    };
-
-    fetch(`http://localhost:5000/service/${id}`, {
-      method: "patch",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(updatedData),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        alert("item Updated successfully!!!");
-      });
-```
-
-## Delete Methood
-
-[Got to top](#let-start-express)
-
-### Delete Data form mongodb Database by id
-
-`Server site code`
-
-```Js
-app.delete("/service/:id", async (req, res) => {
-const id = req.params.id;
-const result = await testCollection.deleteOne({ _id: ObjectId(id) });
-res.send(result);
-});
-```
-
-`Client Site Code`
-
-```Js
+    // Client Site Code
     fetch(`http://localhost:5000/service/${_id}`, {
       method: "DELETE",
     })
       .then((res) => res.json())
       .then((data) => {});
-```
+  } finally {
+    // await client.close();
+  }
+}
+
+// Call the fuction you decleare abobe
+run().catch(console.dir);
+
+// Root Api to cheack activity
+app.get("/", (req, res) => {
+  res.send("Hello From NR Computers!");
+});
+
+app.listen(port, () => {
+  console.log(`NR Computers listening on port ${port}`);
+});
