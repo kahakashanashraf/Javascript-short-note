@@ -1,5 +1,26 @@
 # Express with MongoDB Tutorial (Basic)
 
+## Change navbar styles on scroll
+
+`JS`
+
+```
+window.addEventListener("scroll", () => {
+  document
+    .querySelector("nav")
+    .classList.toggle("window-scroll", window.scrollY > 0);
+});
+```
+
+`CSS`
+
+```
+.window-scroll
+{
+  background-color: var(--color-primary);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.3);
+}
+```
 ## React Tutorial
 
 1. [React Inastallation](https://github.com/dev-nazmulislam/react-short-note/tree/installation)
